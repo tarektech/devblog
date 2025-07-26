@@ -248,7 +248,7 @@ export async function getPostsByTag(
       .from('tags')
       .select('id')
       .eq('slug', tagSlug)
-      .single();
+      .maybeSingle();
 
     if (!tag) return [];
 
@@ -309,7 +309,7 @@ export async function getPostsByCategory(
       .from('categories')
       .select('id')
       .eq('slug', categorySlug)
-      .single();
+      .maybeSingle();
 
     if (!category) return [];
 
@@ -410,7 +410,7 @@ export async function getAuthorByDisplayName(displayName: string) {
       .from('profiles')
       .select('*')
       .eq('display_name', displayName)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching author by display name:', error);
@@ -433,7 +433,7 @@ export async function getTagBySlug(slug: string) {
       .from('tags')
       .select('*')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching tag by slug:', error);
@@ -456,7 +456,7 @@ export async function getCategoryBySlug(slug: string) {
       .from('categories')
       .select('*')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching category by slug:', error);

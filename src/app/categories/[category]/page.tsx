@@ -5,41 +5,53 @@ import { CategoryPosts } from '@/components/blog/category-posts';
 import { CategoriesSidebar } from '@/components/blog/categories-sidebar';
 import { PostsGridSkeleton, SidebarSkeleton } from '@/components/skeleton';
 
+// Force dynamic rendering to prevent build-time static generation issues
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ category: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const categoryData = await getCategoryBySlug(category);
 
-  if (!category) {
+  try {
+    const categoryData = await getCategoryBySlug(category);
+
+    if (!categoryData) {
+      return {
+        title: 'Category Not Found | DevBlog',
+        description: 'The requested category could not be found.',
+      };
+    }
+
+    return {
+      title: `${categoryData.name} | DevBlog`,
+      description:
+        categoryData.description ||
+        `Browse all posts in the "${categoryData.name}" category. Discover articles and tutorials related to ${categoryData.name}.`,
+      openGraph: {
+        title: `${categoryData.name} | DevBlog`,
+        description:
+          categoryData.description ||
+          `Browse all posts in the "${categoryData.name}" category.`,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${categoryData.name} | DevBlog`,
+        description:
+          categoryData.description ||
+          `Browse all posts in the "${categoryData.name}" category.`,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata for category page:', error);
     return {
       title: 'Category Not Found | DevBlog',
       description: 'The requested category could not be found.',
     };
   }
-
-  return {
-    title: `${categoryData.name} | DevBlog`,
-    description:
-      categoryData.description ||
-      `Browse all posts in the "${categoryData.name}" category. Discover articles and tutorials related to ${categoryData.name}.`,
-    openGraph: {
-      title: `${categoryData.name} | DevBlog`,
-      description:
-        categoryData.description ||
-        `Browse all posts in the "${categoryData.name}" category.`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${categoryData.name} | DevBlog`,
-      description:
-        categoryData.description ||
-        `Browse all posts in the "${categoryData.name}" category.`,
-    },
-  };
 }
 
 export default async function CategoryPage({ params }: Props) {
@@ -56,7 +68,7 @@ export default async function CategoryPage({ params }: Props) {
           {/* Main Content */}
           <main className="flex-1">
             <Suspense fallback={<PostsGridSkeleton />}>
-                <CategoryPosts categorySlug={category} />
+              <CategoryPosts categorySlug={category} />
             </Suspense>
           </main>
         </div>

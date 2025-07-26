@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 import { User } from '@supabase/supabase-js';
@@ -12,6 +12,7 @@ export function Navigation() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
+  const pathname = usePathname();
 
   useEffect(() => {
     const getUser = async () => {
@@ -55,25 +56,41 @@ export function Navigation() {
           <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
-              className="text-foreground/60 hover:text-foreground transition-colors"
+              className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
+                pathname === '/' 
+                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                  : ''
+              }`}
             >
               Home
             </Link>
             <Link
               href="/posts"
-              className="text-foreground/60 hover:text-foreground transition-colors"
+              className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
+                pathname === '/posts' 
+                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                  : ''
+              }`}
             >
               Posts
             </Link>
             <Link
               href="/tags"
-              className="text-foreground/60 hover:text-foreground transition-colors"
+              className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
+                pathname === '/tags' 
+                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                  : ''
+              }`}
             >
               Tags
             </Link>
             <Link
               href="/categories"
-              className="text-foreground/60 hover:text-foreground transition-colors"
+              className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
+                pathname === '/categories' 
+                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                  : ''
+              }`}
             >
               Categories
             </Link>

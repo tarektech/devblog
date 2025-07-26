@@ -5,35 +5,47 @@ import { TagPosts } from '@/components/blog/tag-posts';
 import { TagsSidebar } from '@/components/blog/tags-sidebar';
 import { PostsGridSkeleton, SidebarSkeleton } from '@/components/skeleton';
 
+// Force dynamic rendering to prevent build-time static generation issues
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ tag: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag } = await params;
-  const tagData = await getTagBySlug(tag);
 
-  if (!tag) {
+  try {
+    const tagData = await getTagBySlug(tag);
+
+    if (!tagData) {
+      return {
+        title: 'Tag Not Found | DevBlog',
+        description: 'The requested tag could not be found.',
+      };
+    }
+
+    return {
+      title: `${tagData.name} | DevBlog`,
+      description: `Browse all posts tagged with "${tagData.name}". Discover articles and tutorials related to ${tagData.name}.`,
+      openGraph: {
+        title: `${tagData.name} | DevBlog`,
+        description: `Browse all posts tagged with "${tagData.name}".`,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${tagData.name} | DevBlog`,
+        description: `Browse all posts tagged with "${tagData.name}".`,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata for tag page:', error);
     return {
       title: 'Tag Not Found | DevBlog',
       description: 'The requested tag could not be found.',
     };
   }
-
-  return {
-    title: `${tagData.name} | DevBlog`,
-    description: `Browse all posts tagged with "${tagData.name}". Discover articles and tutorials related to ${tagData.name}.`,
-    openGraph: {
-      title: `${tagData.name} | DevBlog`,
-      description: `Browse all posts tagged with "${tagData.name}".`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${tagData.name} | DevBlog`,
-      description: `Browse all posts tagged with "${tagData.name}".`,
-    },
-  };
 }
 
 export default async function TagPage({ params }: Props) {
