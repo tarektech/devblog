@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 import { User } from '@supabase/supabase-js';
+import { hasValidSupabaseCredentials } from '@/lib/utils';
 
 export function Navigation() {
   const [user, setUser] = useState<User | null>(null);
@@ -16,14 +17,31 @@ export function Navigation() {
 
   useEffect(() => {
     const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setIsLoading(false);
+      // Skip authentication if we don't have valid credentials
+      if (!hasValidSupabaseCredentials()) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error getting user:', error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getUser();
+
+    // Only set up auth state listener if we have valid credentials
+    if (!hasValidSupabaseCredentials()) {
+      return;
+    }
 
     const {
       data: { subscription },
@@ -35,9 +53,17 @@ export function Navigation() {
   }, [supabase.auth]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
+    if (!hasValidSupabaseCredentials()) {
+      return;
+    }
+
+    try {
+      await supabase.auth.signOut();
+      router.push('/');
+      router.refresh();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
@@ -57,8 +83,8 @@ export function Navigation() {
             <Link
               href="/"
               className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
-                pathname === '/' 
-                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                pathname === '/'
+                  ? 'text-foreground font-medium border-b-2 border-orange-600'
                   : ''
               }`}
             >
@@ -67,8 +93,8 @@ export function Navigation() {
             <Link
               href="/posts"
               className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
-                pathname === '/posts' 
-                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                pathname === '/posts'
+                  ? 'text-foreground font-medium border-b-2 border-orange-600'
                   : ''
               }`}
             >
@@ -77,8 +103,8 @@ export function Navigation() {
             <Link
               href="/tags"
               className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
-                pathname === '/tags' 
-                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                pathname === '/tags'
+                  ? 'text-foreground font-medium border-b-2 border-orange-600'
                   : ''
               }`}
             >
@@ -87,8 +113,8 @@ export function Navigation() {
             <Link
               href="/categories"
               className={`text-foreground/60 hover:text-foreground transition-all duration-300 ease-in-out hover:scale-105 relative after:absolute after:bottom-[-4px] after:left-1/2 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-300 after:transform after:-translate-x-1/2 hover:after:w-full ${
-                pathname === '/categories' 
-                  ? 'text-foreground font-medium border-b-2 border-orange-600' 
+                pathname === '/categories'
+                  ? 'text-foreground font-medium border-b-2 border-orange-600'
                   : ''
               }`}
             >

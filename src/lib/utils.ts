@@ -22,3 +22,11 @@ export function generateUniqueSlug(title: string, id?: string): string {
   }
   return baseSlug;
 }
+
+export function hasValidSupabaseCredentials(): boolean {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return Boolean(
+    url && key && url !== '' && key !== '' && !url.includes('placeholder')
+  );
+}
