@@ -25,7 +25,7 @@ export function generateUniqueSlug(title: string, id?: string): string {
 
 export function hasValidSupabaseCredentials(): boolean {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
   return Boolean(
     url && key && url !== '' && key !== '' && !url.includes('placeholder')
   );

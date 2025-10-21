@@ -36,7 +36,7 @@ Before deploying to production, ensure you have:
 ```env
 # Supabase Configuration (Production)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_production_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_production_service_role_key
 
 # Application Configuration
@@ -108,7 +108,7 @@ vercel --prod
 
 # Set environment variables
 vercel env add NEXT_PUBLIC_SUPABASE_URL production
-vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY production
 vercel env add SUPABASE_SERVICE_ROLE_KEY production
 vercel env add NEXT_PUBLIC_APP_URL production
 ```
@@ -225,7 +225,7 @@ services:
         value: production
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: your_supabase_url
-      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+      - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
         value: your_anon_key
       - key: SUPABASE_SERVICE_ROLE_KEY
         value: your_service_role_key
@@ -331,7 +331,7 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
     restart: unless-stopped
@@ -361,7 +361,7 @@ docker-compose up -d
 # Or run directly
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_SUPABASE_URL=your_url \
-  -e NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key \
+  -e NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_key \
   developers-blog
 ```
 
