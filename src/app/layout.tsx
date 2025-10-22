@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { StagewiseToolbar } from '@stagewise/toolbar-next';
-import ReactPlugin from '@stagewise-plugins/react';
+
 import { Navigation } from '@/components/layout/navigation';
 import './globals.css';
 
@@ -48,9 +47,9 @@ export default function RootLayout({
       >
         <Navigation />
         <main className="flex-1">{children}</main>
-        {process.env.NODE_ENV === 'development' && (
+        {/* {process.env.NODE_ENV === 'development' && (
           <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
-        )}
+        )} */}
       </body>
     </html>
   );

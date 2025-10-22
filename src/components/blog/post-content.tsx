@@ -17,15 +17,15 @@ export async function PostContent({ id }: PostContentProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log('PostContent - User:', user?.id);
-  console.log('PostContent - Post ID:', id);
+  // console.log('PostContent - User:', user?.id);
+  // console.log('PostContent - Post ID:', id);
 
   // Try to get the post (include unpublished to check ownership)
   const post = await getPostById(id, true);
 
-  console.log('PostContent - Post found:', !!post);
-  console.log('PostContent - Post status:', post?.status);
-  console.log('PostContent - Post author:', post?.author_id);
+  // console.log('PostContent - Post found:', !!post);
+  // console.log('PostContent - Post status:', post?.status);
+  // console.log('PostContent - Post author:', post?.profiles?.display_name);
 
   if (!post) {
     console.log('PostContent - No post found, calling notFound()');

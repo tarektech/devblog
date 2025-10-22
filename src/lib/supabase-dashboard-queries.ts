@@ -47,10 +47,32 @@ export async function getCurrentUserProfile(): Promise<
       console.error('Error fetching user profile:', error);
 
       if (error.code === 'PGRST116') {
+        // Profile doesn't exist, try to create it
+        const displayName = user.user_metadata?.display_name || user.email;
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            display_name: displayName,
+            created_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          return {
+            data: null,
+            error:
+              'Profile not found and could not be created. Please contact support.',
+            type: 'not_found',
+          };
+        }
+
         return {
-          data: null,
-          error: 'Profile not found. Please complete your profile setup.',
-          type: 'not_found',
+          data: newProfile,
+          error: null,
+          type: 'success',
         };
       }
 
@@ -302,15 +324,18 @@ export async function updateUserProfile(profileData: {
       .from('profiles')
       .update(profileData)
       .eq('id', user.id)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       console.error('Error updating profile:', error);
       return { data: null, error: error.message };
     }
 
-    return { data, error: null };
+    if (!data || data.length === 0) {
+      return { data: null, error: 'Profile not found' };
+    }
+
+    return { data: data[0], error: null };
   } catch (error) {
     console.error('Error in updateUserProfile:', error);
     return { data: null, error: 'An unexpected error occurred' };
